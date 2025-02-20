@@ -1,0 +1,148 @@
+# Implementación del Patrón Ambassador con NGINX y Docker
+
+Este proyecto demuestra la implementación del **Patrón Ambassador** con **NGINX** en un entorno **Docker**. Se utiliza un servicio de NGINX como embajador para distribuir las solicitudes entrantes entre dos servidores backend, enviando **el 90% del tráfico al servidor principal y el 10% al servidor experimental**.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+- Docker
+- Docker Compose
+- NGINX
+- Python (Flask)
+
+---
+
+## 📁 Estructura del Proyecto
+```bash
+ambassador-pattern/
+│-- nginx/
+│   │-- nginx.conf
+│   └-- Dockerfile
+│-- backend/
+│   │-- main_server.py
+│   │-- exp_server.py
+│   └-- Dockerfile
+│-- docker-compose.yml
+│-- README.md
+```
+
+---
+
+## 💡 Configuración y Archivos Clave
+
+### **1. Configuración de NGINX (`nginx/nginx.conf`)**
+Este archivo configura NGINX para dividir el tráfico entre los servidores backend usando `split_clients`.
+```nginx
+events {}
+
+http {
+    split_clients "${remote_addr}" $backend {
+        90% "main";
+        10% "exp";
+    }
+
+    upstream main {
+        server main:5000;
+    }
+
+    upstream exp {
+        server exp:5000;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://$backend;
+        }
+    }
+}
+```
+
+### **2. Servidores Backend**
+
+#### **Servidor Principal (`backend/main_server.py`)**
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def main():
+    return "Response from Main Server"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+#### **Servidor Experimental (`backend/exp_server.py`)**
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def experiment():
+    return "Response from Experimental Server"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+### **3. Configuración de Docker**
+#### **Dockerfile para NGINX (`nginx/Dockerfile`)**
+```dockerfile
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/nginx.conf
+```
+
+#### **Dockerfile para los servidores (`backend/Dockerfile`)**
+```dockerfile
+FROM python:3.9
+WORKDIR /app
+COPY . .
+RUN pip install flask
+CMD ["python", "main_server.py"]
+```
+
+---
+
+## 🛠️ Configuración y Ejecución
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/tu-repositorio/ambassador-pattern.git
+   cd ambassador-pattern
+   ```
+
+2. **Construir y ejecutar los contenedores**
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Probar la configuración**
+   Abre un navegador o usa `curl` para enviar solicitudes a `localhost:8080`:
+   ```bash
+   curl http://localhost:8080
+   ```
+   El 90% de las veces responderá `Response from Main Server` y el 10% `Response from Experimental Server`.
+
+4. **Detener los contenedores**
+   ```bash
+   docker-compose down
+   ```
+
+---
+
+## 🌟 Mejoras Futuras
+- Implementar una versión en **Kubernetes**.
+- Hacer que la división de tráfico sea configurable mediante variables de entorno.
+- Integrar con herramientas de monitoreo como **Prometheus y Grafana**.
+
+---
+
+## 👤 Autor
+**Tu Nombre**  
+[GitHub](https://github.com/tu-usuario) | [LinkedIn](https://linkedin.com/in/tu-usuario)
+
+💪 ¡Gracias por probar este proyecto! 🌟
