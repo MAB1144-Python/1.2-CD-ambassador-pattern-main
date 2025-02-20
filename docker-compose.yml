@@ -25,23 +25,23 @@ services:
     volumes:
       - ./backend:/app  # Asegura que los archivos sean accesibles
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
-    privileged: true
-    ports:
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-
-
   # cadvisor:
-  #   image: google/cadvisor:latest
+  #   image: gcr.io/cadvisor/cadvisor:latest
   #   container_name: cadvisor
+  #   privileged: true
   #   ports:
   #     - "8080:8080"
   #   volumes:
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - /sys:/sys:ro
-  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro

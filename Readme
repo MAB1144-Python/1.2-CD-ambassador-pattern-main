@@ -146,3 +146,70 @@ CMD ["python", "main_server.py"]
 [GitHub](https://github.com/tu-usuario) | [LinkedIn](https://linkedin.com/in/tu-usuario)
 
 💪 ¡Gracias por probar este proyecto! 🌟
+
+
+## 🐍 Crear un Entorno Virtual en Python
+
+Para aislar las dependencias del proyecto y evitar conflictos con otras versiones de paquetes, es recomendable crear un entorno virtual.
+
+1. **Instalar `virtualenv`**
+    Si no tienes `virtualenv` instalado, puedes instalarlo usando `pip`:
+    ```bash
+    pip install virtualenv
+    ```
+
+2. **Crear el entorno virtual**
+    Navega al directorio del proyecto y crea un entorno virtual:
+    ```bash
+    python3 -m venv test-st/
+    ```
+
+3. **Activar el entorno virtual**
+    - En Windows:
+      ```bash
+      ./test-st/Scripts/activate
+      ```
+    - En macOS y Linux:
+      ```bash
+      source venv/bin/activate
+      ```
+
+4. **Instalar dependencias**
+    Con el entorno virtual activado, instala las dependencias necesarias:
+    ```bash
+    pip install locust
+    ```
+
+5. **Desactivar el entorno virtual**
+    Una vez que hayas terminado de trabajar, puedes desactivar el entorno virtual:
+    ```bash
+    deactivate
+    ```
+## 🐍 Ejecución de los Servidores Backend
+
+Para ejecutar los servidores backend de manera individual sin Docker, sigue estos pasos:
+
+1. **Activar el entorno virtual**
+    - En Windows:
+        ```bash
+        ./test-st/Scripts/activate
+        ```
+    - En macOS y Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+
+2. **Ejecutar el servidor principal**
+    Navega al directorio `backend` y ejecuta el servidor principal:
+    ```bash
+    locust -f locustfile.py --host http://localhost:9080
+    ```
+
+
+4. **Probar los servidores**
+    Abre un navegador o usa `curl` para enviar solicitudes a `localhost:5000` para el servidor principal y `localhost:5000` para el servidor experimental:
+    ```bash
+    http://localhost:8089
+    ```
+
+---
